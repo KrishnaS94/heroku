@@ -15,7 +15,7 @@ const router = express.Router();
 var log4js = require('log4js');
 var con = require('./config/Connection.js');
 var path = require('path');
-var swal = require('sweetalert')
+
 log4js.configure({
   appenders: {
     Aman_project: { type: 'dateFile', filename: './log/Aman_Project_'+ new Date().getFullYear() + "-"+ (new Date().getMonth()+ 1) + "-"+ new Date().getDate()+'.log'}
