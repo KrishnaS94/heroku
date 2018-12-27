@@ -33,6 +33,9 @@ let date = require('date-and-time');
 var log4js = require('log4js');
 const logger = log4js.getLogger('Aman_project');
 let now = new Date();
+const moment =require("moment")
+
+
 
 
 
@@ -63,6 +66,12 @@ module.exports = router =>  {
     //var email_verify_link = "";
     var verify_email ="N";
     var verify_mobile ="N";
+    if(!email_id){
+      res.send({
+        status:"false",
+        Message:"Please provide Emailid"})
+    }
+    else{
     var sql = "SELECT  * FROM Residents where email_id ='" + email_id + "'";
     dbFunc.connectionRelease;
     await translate({text:name_en,source: 'en',target: 'ar'}, function(result,Error) {
@@ -227,13 +236,14 @@ module.exports = router =>  {
     }
     
     })
+  }
     
     });
     //==================================supplierregistration============================//
     router.post('/supplier-registration', async (req, res) => {
       console.log(req.body);
       var uae_trade_license_no= req.body.uae_trade_license_no;
-      // var trade_license_validity=req.body.trade_license_validity;
+       var trade_license_validity=req.body.trade_license_validity;
       // var product_services_type= req.body.product_services_type;
       var company_name= req.body.company_name;
       var reg_office_add=req.body.reg_office_add;
@@ -250,6 +260,9 @@ module.exports = router =>  {
       var type_name= "supplier";
       var verify_email ="N";
       var verify_mobile ="N";
+      var dateTime = new Date(trade_license_validity);
+var datetime = moment(dateTime).format("YYYY/MM/DD HH:mm:ss");
+console.log(datetime,"datecheck")
      
 
 
@@ -318,6 +331,7 @@ module.exports = router =>  {
         var email_verify_link=link;
       console.log("hai");
       
+      
       var sql = "SELECT * FROM types WHERE type_name = '" + type_name + "'";
       con.query(sql, function (err, result) {
         if (err) throw err;
@@ -325,7 +339,7 @@ module.exports = router =>  {
         logger.fatal("DataBase ERR:",err)
         console.log("user_id",result[0].id)
         var product_services_type = result[0].id;
-        var sql = "INSERT INTO supplier (uae_trade_license_no,trade_license_validity,product_services_type,company_name,reg_office_add,contact_no,fax_no,company_email_id,website_add,contact_name,contact_position,contact_no_mobile,contact_email_id,otp,email_verify_link,verify_mobile,verify_email)  VALUES ('" + uae_trade_license_no + "','" + date.format(now, 'YYYY/MM/DD HH:mm:ss') +"','" + product_services_type + "','" + company_name + "','" +reg_office_add + "','" + contact_no + "','" + fax_no + "','" + company_email_id + "','" + website_add + "','" + contact_name + "','" + contact_position + "', '" + contact_no_mobile + "', '" + contact_email_id + "','" + otp + "','" + email_verify_link + "','" + verify_mobile + "','" + verify_email + "');"
+        var sql = "INSERT INTO supplier (uae_trade_license_no,trade_license_validity,product_services_type,company_name,reg_office_add,contact_no,fax_no,company_email_id,website_add,contact_name,contact_position,contact_no_mobile,contact_email_id,otp,email_verify_link,verify_mobile,verify_email)  VALUES ('" + uae_trade_license_no+ "','" + datetime +"','" + product_services_type + "','" + company_name + "','" +reg_office_add + "','" + contact_no + "','" + fax_no + "','" + company_email_id + "','" + website_add + "','" + contact_name + "','" + contact_position + "', '" + contact_no_mobile + "', '" + contact_email_id + "','" + otp + "','" + email_verify_link + "','" + verify_mobile + "','" + verify_email + "');"
         con.query(sql, function (err, result) {
       if (err) throw err;
       dbFunc.connectionRelease;
@@ -445,6 +459,12 @@ con.query(sql, function (err, result) {
   if (err) throw err;
   dbFunc.connectionRelease;
   logger.fatal("DataBase ERR:",err)
+  if(result[0].verify_email=="N"){
+    res.send({
+      status:"false",
+      Message:"Please register Again"})
+  }
+  else{
 if(result.length ==0){
 res.send({Message:"Invalid User name",
 status:"false",
@@ -490,7 +510,9 @@ res.send({
 }
 }
 dbFunc.connectionRelease; 
+  }
 });
+
 });
 
 //===================================================================================//
@@ -777,7 +799,7 @@ router.post('/forgetpassword',(req,res) =>{
         transport: transporter,
         from: "Saned Services" + "<kavitha.rajasekaran@rapidqube.com>",
         to: req.body.email_id,
-        subject: 'Saned Service-OTP Verification',
+        subject: 'Saned Services newsletter',
       
         html: "Dear "+ result[0].name_en +"<br>You are successfully subscribe to SANED newsletter.<br>Should you wish to unsubscribe the newsletter, here is the link to do so.<br>" +link+ "<br>Best Regards,<br>"+"SANED Team."
       
@@ -855,7 +877,7 @@ router.post('/newsletter-supplier', async (req, res) => {
       transport: transporter,
       from: "Saned Services" + "<kavitha.rajasekaran@rapidqube.com>",
       to: req.body.email_id,
-      subject: 'Saned Service-OTP Verification',
+      subject: 'Saned Services newsletter',
     
       html: "Dear "+ result[0].name_en +"<br>You are successfully subscribe to SANED newsletter.<br>Should you wish to unsubscribe the newsletter, here is the link to do so.<br>" +link+ "<br>Best Regards,<br>"+"SANED Team."
 
