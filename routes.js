@@ -43,11 +43,11 @@ module.exports = router =>  {
 
   router.post('/register', async (req, res) => {
     var email_id = req.body.email;
-    console.log("em",email_id);
-    let password = cryptr.encrypt(req.body.password);
+   
+   
     var name_en = req.body.name;
-    // var title_en = req.body.title;
-    var title_en = "Saned";
+     var title_en = req.body.title;
+  
     var company_en = req.body.company;
     var nationality_en = req.body.nationality;
     var phone_nmuber = req.body.phone;
@@ -55,8 +55,8 @@ module.exports = router =>  {
     var address_en = req.body.address;
     var po_box = req.body.po_box;
     var language = req.body.language;
-    // var interests_en = req.body.interest;
-    var interests_en = "games";
+    var interests_en = req.body.interest;
+    
     var newsletter = req.body.newsletter;
     //var type_name = req.body.typename;
     var type_name = "user";
@@ -66,80 +66,104 @@ module.exports = router =>  {
     //var email_verify_link = "";
     var verify_email ="N";
     var verify_mobile ="N";
+    console.log("hai")
+    console.log(!email_id)
     if(!email_id){
+      console.log("hai22")
       res.send({
-        status:"false",
-        Message:"Please provide Emailid"})
+        "status":false,
+        "Message":"Please provide Mandatory fields",
+        "رسالة": "يرجى تقديم حقول إلزامية"
+      })
     }
     else{
+      let password = cryptr.encrypt(req.body.password);
     var sql = "SELECT  * FROM Residents where email_id ='" + email_id + "'";
     dbFunc.connectionRelease;
-    await translate({text:name_en,source: 'en',target: 'ar'}, function(result,Error) {
-      if(Error){
-        name_ar = name_en
-      }
-      else{
+    if(name_en){
+    await translate({text:name_en,source: 'en',target: 'ar'}, function(result) {
+      
+        console.log(result);
         name_ar= result.sentences[0].trans;
-        console.log(name_ar)
 
+       
+      
+    });
+  }
+      else{
+        name_ar = name_en
       }
       //console.log(result1);
       
     
-      });
+      
       console.log(name_ar)
     
-      await translate({text:company_en,source: 'en',target: 'ar'}, function(result,err) {
-        if(err){
-          company_ar = company_en
-        }
-        else{
-          company_ar= result.sentences[0].trans;
-          console.log(company_ar)
-  
-        }        //console.log(result1);
-         
+      if(company_en){
+        await translate({text:company_en,source: 'en',target: 'ar'}, function(result) {
+          
+            console.log(result);
+            company_ar= result.sentences[0].trans;
+    
+           
           
         });
-        console.log(company_ar)
-        await translate({text:title_en,source: 'en',target: 'ar'}, function(result,err) {
-          if(err){title_ar = title_en}
+      }
           else{
-           title_ar= result.sentences[0].trans;
+            company_ar = company_en
           }
+          if(title_en){
+            await translate({text:title_en,source: 'en',target: 'ar'}, function(result) {
+              
+                console.log(result);
+                title_ar= result.sentences[0].trans;
         
-          });
-          console.log(title_ar,"title_ar")
-           await translate({text: nationality_en,source: 'en',target: 'ar'}, function(result,err) {
-         if(err){nationality_ar=nationality_en}
-         else{
-             nationality_ar= result.sentences[0].trans;
-         }
-          
+               
+              
             });
-            console.log(nationality_ar,"nationality")
-            await translate({text: address_en,source: 'en',target: 'ar'}, function(result,err) {
-              if(err){address_ar=address_en}
+          }
               else{
-                  address_ar= result.sentences[0].trans;
+                title_ar = title_en
               }
-                   //console.log(result1);
-              
+              if(nationality_en){
+                await translate({text:nationality_en,source: 'en',target: 'ar'}, function(result) {
+                  
+                    console.log(result);
+                    nationality_ar= result.sentences[0].trans;
             
-              });
-              console.log(address_ar,"address_ar")
-              await translate({text: interests_en,source: 'en',target: 'ar'}, function(result,err) {
-                if(err){interests_ar=interests_en}
-                else{
-                  interests_ar= result.sentences[0].trans;
-                }
-       
-                //console.log(result1);
-                
-              
+                   
+                  
                 });
-                console.log(interests_ar,"interests")
-    
+              }
+                  else{
+                    nationality_ar = nationality_en
+                  }
+                  if(address_en){
+                    await translate({text:address_en,source: 'en',target: 'ar'}, function(result) {
+                      
+                        console.log(result);
+                        address_ar= result.sentences[0].trans;
+                
+                       
+                      
+                    });
+                  }
+                      else{
+                        address_ar = address_en
+                      }
+                      if(interests_en){
+                        await translate({text:interests_en,source: 'en',target: 'ar'}, function(result) {
+                          
+                            console.log(result);
+                            interests_ar= result.sentences[0].trans;
+                    
+                           
+                          
+                        });
+                      }
+                          else{
+                            interests_ar = interests_en
+                          }
     
     
     
@@ -177,8 +201,8 @@ module.exports = router =>  {
         port: 587,
         secure: false,
         auth: {
-          user: "srileha.chandrasekaran@rapidqube.com",
-          pass: "Leha141295"
+          user: "logeshwaran.thulasidass@rapidqube.com",
+          pass: "chennai@123"
         }
       });
     
@@ -186,7 +210,7 @@ module.exports = router =>  {
      
     var mailOptions = {
       transport: transporter,
-      from: "Saned Services" + "<srileha.chandrasekaran@rapidqube.com>",
+      from: "Saned Services" + "<logeshwaran.thulasidass@rapidqube.com>",
       to: req.body.email,
       subject: 'Saned Service-OTP Verification',
     
@@ -219,7 +243,7 @@ module.exports = router =>  {
     console.log(result,"inserted.......")
     res.send({
         Message: "please check your email for one time password",
-        الرسالة: "الرجاء التحقق من بريدك الإلكتروني لـ otp"
+        الرسالة: "يرجى التحقق من بريدك الإلكتروني لمرة واحدة كلمة المرور"
       })
     dbFunc.connectionRelease;
                  })
@@ -264,10 +288,14 @@ module.exports = router =>  {
       var dateTime = new Date(trade_license_validity);
 var datetime = moment(dateTime).format("YYYY/MM/DD HH:mm:ss");
 console.log(datetime,"datecheck")
-     
+     console.log(!contact_email_id)
+if(!contact_email_id==true){
+  res.send({
+    "status":false,
+    "message":"Please provide an Emailid"})
+}
 
-
-
+else{
       var sql = "SELECT  * FROM supplier where contact_email_id ='" + contact_email_id + "'";
       dbFunc.connectionRelease;    
       con.query(sql, function (err, result) {
@@ -304,8 +332,8 @@ console.log(datetime,"datecheck")
           port: 587,
           secure: false,
           auth: {
-            user: "srileha.chandrasekaran@rapidqube.com",
-            pass: "Leha141295"
+            user: "logeshwaran.thulasidass@rapidqube.com",
+            pass: "chennai@123"
           }
         });
       console.log("before link")
@@ -313,7 +341,7 @@ console.log(datetime,"datecheck")
        
       var mailOptions = {
         transport: transporter,
-        from: "Saned Services" + "<srileha.chandrasekaran@rapidqube.com>",
+        from: "Saned Services" + "<logeshwaran.thulasidass@rapidqube.com>",
         to: contact_email_id,
         subject: 'Saned Service-OTP Verification',
       
@@ -365,6 +393,7 @@ console.log(datetime,"datecheck")
       }
       
       })
+    }
       
       });
       //========================supplieremailverification===========================//
@@ -387,13 +416,13 @@ router.get("/email/verify", cors(), (req, res, next) => {
           port: 587,
           secure: false,
           auth: {
-            user: "srileha.chandrasekaran@rapidqube.com",
-            pass: "Leha141295"
+            user: "logeshwaran.thulasidass@rapidqube.com",
+            pass: "chennai@123"
           }
         });
               var mailOptions = {
                 transport: transporter,
-                from: "Saned Services" + "<srileha.chandrasekaran@rapidqube.com>",
+                from: "Saned Services" + "<logeshwaran.thulasidass@rapidqube.com>",
                 to: req.body.email_id,
                 subject: 'Saned Services newsletter',
               
@@ -441,14 +470,14 @@ router.get("/email/verify", cors(), (req, res, next) => {
           port: 587,
           secure: false,
           auth: {
-            user: "srileha.chandrasekaran@rapidqube.com",
-            pass: "Leha141295"
+            user: "logeshwaran.thulasidass@rapidqube.com",
+            pass: "chennai@123"
           }
         });
               var mailOptions = {
                 transport: transporter,
-                from: "Saned Services" + "<srileha.chandrasekaran@rapidqube.com>",
-                to: req.body.email_id,
+                from: "Saned Services" + "<logeshwaran.thulasidass@rapidqube.com>",
+                to: results[0].contact_email_id,
                 subject: 'Saned Services newsletter',
               
                 html: "Dear "+ results[0].contact_name +"<br>Thank you for registering your company," + results[0].company_name + "with SANED as a Supplier.  SANED will be rolling out new services for Sharjah residents."+"<br><br>" + "We will contact you for further information.<br><br><br>"+"Best Regards,<br>"+"SANED Team."
@@ -606,13 +635,13 @@ con.query("SELECT * FROM Residents where otp='" + otp+ "'",  function(error, res
                   port: 587,
                   secure: false,
                   auth: {
-                    user: "srileha.chandrasekaran@rapidqube.com",
-                    pass: "Leha141295"
+                    user: "logeshwaran.thulasidass@rapidqube.com",
+                    pass: "chennai@123"
                   }
                 });
                       var mailOptions = {
                         transport: transporter,
-                        from: "Saned Services" + "<srileha.chandrasekaran@rapidqube.com>",
+                        from: "Saned Services" + "<logeshwaran.thulasidass@rapidqube.com>",
                         to: results[0].email_id,
                         subject: 'Saned Services newsletter',
                       
@@ -669,8 +698,8 @@ router.post("/emailotp", (req, res) => {
 		port: 587,
 		secure: false,
 		auth: {
-			user: "srileha.chandrasekaran@rapidqube.com",
-			pass: "Leha141295"
+			user: "logeshwaran.thulasidass@rapidqube.com",
+			pass: "chennai@123"
 		}
 	});
 	var remoteHost = "119.81.59.59:8000"
@@ -679,7 +708,7 @@ router.post("/emailotp", (req, res) => {
 
 	var mailOptions = {
 		transport: transporter,
-		from: "Aman Services" + "<srileha.chandrasekaran@rapidqube.com>",
+		from: "Aman Services" + "<logeshwaran.thulasidass@rapidqube.com>",
 		to: req.body.email,
 		subject: 'Saned Service-OTP Verification',
 
@@ -708,6 +737,13 @@ router.post('/forgetpassword',(req,res) =>{
     console.log(password)
     let confirmpassword = req.body.confirmpassword;
     let username = req.body.email;
+    if(!username || !password || !confirmpassword)
+    {
+      res.send({
+        "Message":"Please fill all the details"
+      })
+    }
+    else{
     console.log(username)
             let sql = "SELECT * FROM Residents where email_id ='" + username + "'";
           
@@ -766,13 +802,13 @@ router.post('/forgetpassword',(req,res) =>{
                 port: 587,
                 secure: false,
                 auth: {
-                  user: "srileha.chandrasekaran@rapidqube.com",
-                  pass: "Leha141295"
+                  user: "logeshwaran.thulasidass@rapidqube.com",
+                  pass: "chennai@123"
                 }
               });
              var mailOptions = {
               transport: transporter,
-              from: "Saned Services" + "<srileha.chandrasekaran@rapidqube.com>",
+              from: "Saned Services" + "<logeshwaran.thulasidass@rapidqube.com>",
               to: req.body.email,
               subject: 'Saned Service-OTP Verification',
             
@@ -807,6 +843,7 @@ router.post('/forgetpassword',(req,res) =>{
       }
           
     } );
+  }
 });
   //========================forgetpassword-otp===============================//
   router.post("/forgetotpverification", cors(), (req, res) => {
@@ -825,7 +862,7 @@ router.post('/forgetpassword',(req,res) =>{
           // var results = JSON.parse(JSON.stringify(results));
           console.log(results,"logesh");
           if (results.length > 0) {
-              if (results[0].otp === otp) {
+              if (results[0].otp == otp) {
                   console.log(otp);
                   // results[0].verify_email = "Y"
                   // console.log(results[0].uid);
@@ -836,14 +873,15 @@ router.post('/forgetpassword',(req,res) =>{
                       "message": "one time password is verified and Password updated successfully",
                       رسالة: "كلمة مرور مرة واحدة تم التحقق من كلمة المرور وتحديثها بنجاح"
                   });
-              } else {
-                  res.send({
-                      status: "false",
-                      "message": "Invalid one time password",
-                      رسالة: "كلمة مرور غير صالحة مرة واحدة"
-                  });
-              }
+              } 
            }
+           else {
+            res.send({
+                status: "false",
+                "message": "Invalid one time password",
+                رسالة: "كلمة مرور غير صالحة مرة واحدة"
+            });
+        }
       }
   });
   });
@@ -880,8 +918,8 @@ router.post('/forgetpassword',(req,res) =>{
           port: 587,
           secure: false,
           auth: {
-            user: "srileha.chandrasekaran@rapidqube.com",
-            pass: "Leha141295"
+            user: "logeshwaran.thulasidass@rapidqube.com",
+            pass: "chennai@123"
           }
         });
       
@@ -889,7 +927,7 @@ router.post('/forgetpassword',(req,res) =>{
        
       var mailOptions = {
         transport: transporter,
-        from: "Saned Services" + "<srileha.chandrasekaran@rapidqube.com>",
+        from: "Saned Services" + "<logeshwaran.thulasidass@rapidqube.com>",
         to: req.body.email_id,
         subject: 'Saned Services newsletter',
       
@@ -958,8 +996,8 @@ router.post('/newsletter-supplier', async (req, res) => {
         port: 587,
         secure: false,
         auth: {
-          user: "srileha.chandrasekaran@rapidqube.com",
-          pass: "Leha141295"
+          user: "logeshwaran.thulasidass@rapidqube.com",
+          pass: "chennai@123"
         }
       });
     
@@ -967,7 +1005,7 @@ router.post('/newsletter-supplier', async (req, res) => {
      
     var mailOptions = {
       transport: transporter,
-      from: "Saned Services" + "<srileha.chandrasekaran@rapidqube.com>",
+      from: "Saned Services" + "<logeshwaran.thulasidass@rapidqube.com>",
       to: req.body.email_id,
       subject: 'Saned Services newsletter',
     
